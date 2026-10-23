@@ -107,9 +107,20 @@ if all([sales_file, products_file, categories_file,
     total_revenue = data["Revenue"].sum()
     transaction_count = len(data)
 
-    col1, col2 = st.columns(2)
+    website_revenue = data.loc[
+        data["StoreType"] == "Website", "Revenue"
+    ].sum()
+
+    physical_revenue = data.loc[
+        data["StoreType"] == "Brick & Mortar", "Revenue"
+    ].sum()
+
+    col1, col2, col3, col4 = st.columns(4)
+
     col1.metric("Total Revenue", f"${total_revenue:,.2f}")
-    col2.metric("Sales Records", f"{transaction_count:,}")
+    col2.metric("Website Revenue", f"${website_revenue:,.2f}")
+    col3.metric("Brick & Mortar Revenue", f"${physical_revenue:,.2f}")
+    col4.metric("Sales Records", f"{transaction_count:,}")
 
    # Revenue by year
     st.subheader("Revenue by Year")
