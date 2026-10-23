@@ -167,15 +167,55 @@ if all([sales_file, products_file, categories_file,
 
     st.altair_chart(chart, use_container_width=True)
 
-    # Revenue by sales channel
+   # Revenue by sales channel
     st.subheader("Revenue by Sales Channel")
 
     channel_revenue = (
         data.groupby("StoreType")["Revenue"]
         .sum()
-        .sort_values(ascending=False)
+        .reset_index()
     )
-    st.bar_chart(channel_revenue)
+
+    channel_revenue = channel_revenue.sort_values(
+        "Revenue", ascending=False
+    )
+
+    bars = alt.Chart(channel_revenue).mark_bar(
+        color="#60A5FA"
+    ).encode(
+        x=alt.X(
+            "Revenue:Q",
+            title="Total Revenue",
+            scale=alt.Scale(zero=True)
+        ),
+        y=alt.Y(
+            "StoreType:N",
+            title="Sales Channel",
+            sort="-x"
+        ),
+        tooltip=[
+            alt.Tooltip("StoreType:N", title="Sales Channel"),
+            alt.Tooltip("Revenue:Q", format="$,.2f")
+        ]
+    )
+
+    labels = alt.Chart(channel_revenue).mark_text(
+        align="left",
+        baseline="middle",
+        dx=6,
+        color="#60A5FA",
+        fontSize=13
+    ).encode(
+        x="Revenue:Q",
+        y=alt.Y("StoreType:N", sort="-x"),
+        text=alt.Text("Revenue:Q", format="$,.2f")
+    )
+
+    channel_chart = (bars + labels).properties(
+        height=220
+    )
+
+    st.altair_chart(channel_chart, use_container_width=True)
 
     # Preview combined data
     st.header("3. Combined Dataset")
