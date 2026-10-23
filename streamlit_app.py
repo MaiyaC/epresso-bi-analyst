@@ -166,7 +166,72 @@ if all([sales_file, products_file, categories_file,
     )
 
     st.altair_chart(chart, use_container_width=True)
+   # Monthly revenue as a percentage of selected revenue
+    st.subheader("Percent of Revenue by Month")
 
+    monthly_data = data.copy()
+    monthly_data["Month"] = monthly_data["Date"].dt.month
+
+    monthly_revenue = (
+        monthly_data.groupby("Month")["Revenue"]
+        .sum()
+        .reindex(range(1, 13), fill_value=0)
+        .reset_index()
+    )
+
+    month_names = [
+        "January", "February", "March", "April",
+        "May", "June", "July", "August",
+        "September", "October", "November", "December"
+    ]
+
+    monthly_revenue["Month Name"] = month_names
+
+    if total_revenue != 0:
+        monthly_revenue["Percentage"] = (
+            monthly_revenue["Revenue"] / total_revenue * 100
+        )
+    else:
+        monthly_revenue["Percentage"] = 0.0
+
+    monthly_bars = alt.Chart(monthly_revenue).mark_bar(
+        color="#60A5FA"
+    ).encode(
+        x=alt.X(
+            "Month Name:N",
+            sort=month_names,
+            title="Month"
+        ),
+        y=alt.Y(
+            "Percentage:Q",
+            title="Percentage of Selected Revenue (%)"
+        ),
+        tooltip=[
+            alt.Tooltip("Month Name:N", title="Month"),
+            alt.Tooltip("Revenue:Q", format="$,.2f"),
+            alt.Tooltip("Percentage:Q", format=".2f")
+        ]
+    )
+
+    monthly_labels = alt.Chart(monthly_revenue).mark_text(
+        dy=-8,
+        color="#60A5FA",
+        fontSize=12
+    ).encode(
+        x=alt.X("Month Name:N", sort=month_names),
+        y="Percentage:Q",
+        text=alt.Text("Percentage:Q", format=".2f")
+    )
+
+    st.altair_chart(
+        (monthly_bars + monthly_labels).properties(height=350),
+        use_container_width=True
+    )
+
+    st.caption(
+        "Each month is calculated as a percentage of total "
+        "revenue for the currently selected filters."
+    )
    # Revenue by sales channel
     st.subheader("Revenue by Sales Channel")
 
