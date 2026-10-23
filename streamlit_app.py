@@ -69,7 +69,37 @@ if all([sales_file, products_file, categories_file,
     )
 
     st.success("All five datasets uploaded successfully!")
+  # Interactive dashboard filters
+    st.header("Dashboard Filters")
 
+    available_years = sorted(
+        data["Date"].dt.year.dropna().unique().tolist()
+    )
+
+    selected_years = st.multiselect(
+        "Select Year(s)",
+        options=available_years,
+        default=available_years
+    )
+
+    selected_categories = st.multiselect(
+        "Select Product Category",
+        options=sorted(data["Category"].dropna().unique()),
+        default=sorted(data["Category"].dropna().unique())
+    )
+
+    selected_channels = st.multiselect(
+        "Select Sales Channel",
+        options=sorted(data["StoreType"].dropna().unique()),
+        default=sorted(data["StoreType"].dropna().unique())
+    )
+
+    # Apply the selected filters
+    data = data[
+        data["Date"].dt.year.isin(selected_years)
+        & data["Category"].isin(selected_categories)
+        & data["StoreType"].isin(selected_channels)
+    ].copy()
     # Show revenue calculations
     st.header("2. Business Performance")
 
