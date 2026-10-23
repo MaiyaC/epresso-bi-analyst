@@ -111,15 +111,50 @@ if all([sales_file, products_file, categories_file,
     col1.metric("Total Revenue", f"${total_revenue:,.2f}")
     col2.metric("Sales Records", f"{transaction_count:,}")
 
-    # Revenue by year
+   # Revenue by year
     st.subheader("Revenue by Year")
 
     annual_revenue = (
         data.groupby(data["Date"].dt.year)["Revenue"]
         .sum()
-        .sort_index()
+        .reset_index()
     )
-    st.line_chart(annual_revenue)
+
+    annual_revenue.columns = ["Year", "Revenue"]
+    annual_revenue["Year"] = annual_revenue["Year"].astype(str)
+
+    # Create the line chart
+    line = alt.Chart(annual_revenue).mark_line(
+        point=True,
+        color="#60A5FA",
+        strokeWidth=3
+    ).encode(
+        x=alt.X("Year:N", title="Year"),
+        y=alt.Y("Revenue:Q", title="Total Revenue"),
+        tooltip=[
+            "Year:N",
+            alt.Tooltip("Revenue:Q", format="$,.2f")
+        ]
+    )
+
+    # Display exact revenue above each year
+    labels = alt.Chart(annual_revenue).mark_text(
+        align="center",
+        baseline="bottom",
+        dy=-12,
+        color="#60A5FA",
+        fontSize=13
+    ).encode(
+        x="Year:N",
+        y="Revenue:Q",
+        text=alt.Text("Revenue:Q", format="$,.2f")
+    )
+
+    chart = (line + labels).properties(
+        height=400
+    )
+
+    st.altair_chart(chart, use_container_width=True)
 
     # Revenue by sales channel
     st.subheader("Revenue by Sales Channel")
