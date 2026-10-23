@@ -118,7 +118,7 @@ if all([sales_file, products_file, categories_file,
         .sum()
         .sort_index()
     )
-    st.bar_chart(annual_revenue)
+    st.line_chart(annual_revenue)
 
     # Revenue by sales channel
     st.subheader("Revenue by Sales Channel")
