@@ -49,6 +49,11 @@ if all([sales_file, products_file, categories_file,
         st.error("Duplicate IDs found in a lookup table.")
         st.stop()
 
+    original_sales_rows = len(sales)
+    original_sales_revenue = pd.to_numeric(
+        sales["Revenue"], errors="coerce"
+    ).sum()
+            
     # Connect the sales data to lookup tables
     data = sales.merge(
         products, on="Product ID", how="left",
@@ -63,7 +68,16 @@ if all([sales_file, products_file, categories_file,
         left_on="Store ID", right_on="ID",
         how="left", validate="many_to_one"
     )
+    merged_sales_rows = len(data)
+    merged_sales_revenue = pd.to_numeric(
+        data["Revenue"], errors="coerce"
+    ).sum()
 
+    if (original_sales_rows != merged_sales_rows
+            or abs(original_sales_revenue - merged_sales_revenue) > 0.01):
+        st.error("Data merge changed the sales row count or total revenue.")
+        st.stop()
+                
     data["Date"] = pd.to_datetime(data["Date"])
     data["Revenue"] = pd.to_numeric(
         data["Revenue"], errors="coerce"
