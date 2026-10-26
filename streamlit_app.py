@@ -307,6 +307,23 @@ if all([sales_file, products_file, categories_file,
     st.dataframe(
         data.isna().sum().rename("Missing Values")
     )
+    missing_city = data[data["City"].isna()]
+
+    if len(missing_city) > 0:
+        website_missing = (
+            missing_city["StoreType"] == "Website"
+        ).sum()
+
+        if website_missing == len(missing_city):
+            st.info(
+                "All missing City values belong to website sales. "
+                "These transactions do not have a physical store city."
+            )
+        else:
+            st.warning(
+                "Some missing City values are associated with "
+                "non-website transactions and should be investigated."
+            )
 
     st.write(
         "Duplicate Sales IDs:",
