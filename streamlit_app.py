@@ -102,27 +102,6 @@ if all([sales_file, products_file, categories_file,
         "Duplicate Store ID and Year combinations in Survey:",
         survey.duplicated(subset=["Store ID", "Year"]).sum()
     )
-    st.subheader("Dataset Relationships and Grain")
-
-    grain_summary = pd.DataFrame({
-        "Dataset": ["Sales", "Products", "Categories", "Stores", "Survey"],
-        "One Row Represents": [
-            "One sales transaction",
-            "One product",
-            "One product category",
-            "One store or sales channel location",
-            "One store-year survey record"
-        ],
-        "Key": [
-            "Sales ID",
-            "Product ID",
-            "Category ID",
-            "ID",
-            "Store ID + Year"
-        ]
-    })
-
-    st.dataframe(grain_summary, hide_index=True)
     
   # Interactive dashboard filters
     st.header("Dashboard Filters")
