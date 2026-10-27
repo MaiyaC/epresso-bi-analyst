@@ -84,24 +84,11 @@ if all([sales_file, products_file, categories_file,
     )
 
     st.success("All five datasets uploaded successfully!")
-    st.subheader("Dataset Summary")
+   
+    survey_duplicate_count = survey.duplicated(
+        subset=["Store ID", "Year"]
+    ).sum()
 
-    dataset_summary = pd.DataFrame({
-        "Dataset": ["Sales", "Products", "Categories", "Stores", "Survey"],
-        "Rows": [len(sales), len(products), len(categories),
-                 len(stores), len(survey)],
-        "Columns": [len(sales.columns), len(products.columns),
-                    len(categories.columns), len(stores.columns),
-                    len(survey.columns)]
-    })
-
-    st.dataframe(dataset_summary, hide_index=True)
-    st.write("Survey column names:")
-    st.write(survey.columns.tolist())
-    st.write(
-        "Duplicate Store ID and Year combinations in Survey:",
-        survey.duplicated(subset=["Store ID", "Year"]).sum()
-    )
     
   # Interactive dashboard filters
     st.header("Dashboard Filters")
