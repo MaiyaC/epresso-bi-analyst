@@ -98,7 +98,11 @@ if all([sales_file, products_file, categories_file,
     st.dataframe(dataset_summary, hide_index=True)
     st.write("Survey column names:")
     st.write(survey.columns.tolist())
-            
+    st.write(
+        "Duplicate Store ID and Year combinations in Survey:",
+        survey.duplicated(subset=["Store ID", "Year"]).sum()
+    )
+        
   # Interactive dashboard filters
     st.header("Dashboard Filters")
 
