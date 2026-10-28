@@ -80,6 +80,21 @@ The original Sales.xlsx file was restored, and the dashboard continued operating
 
 **Result: Passed**
 
+### Revenue Verification Test
+
+The Streamlit dashboard was tested using the original datasets with all filters set to All.
+
+The displayed results were compared against the previously verified dataset totals:
+
+- Total Revenue: $42,174,440
+- Website Revenue: $27,218,880
+- Brick-and-Mortar Revenue: $14,955,560
+- Total Sales Records: 25,200
+
+All four dashboard values matched the expected results exactly.
+
+**Result: Passed**
+
 ### Data Import and Preparation
 
 The application uses Pandas to import the five uploaded Excel and CSV datasets. Revenue values are converted to numeric format, and sales dates are converted to datetime format for analysis.
@@ -119,5 +134,5 @@ The missing City values are associated with website sales, which do not have a p
 ### Additional Validation Still Required
 
 - Test additional missing required fields in the uploaded datasets.
-- Complete independent revenue calculations and compare results with Power BI.
+- Compare Streamlit revenue calculations against Power BI results for independent verification.
 - Perform the required $1,000 modified-revenue test.
