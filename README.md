@@ -95,6 +95,25 @@ All four dashboard values matched the expected results exactly.
 
 **Result: Passed**
 
+### Dynamic Revenue Calculation Test
+
+To verify that the dashboard dynamically calculates revenue from uploaded data, a separate copy of Sales.xlsx was created.
+
+One revenue value was increased by $1,000, and the modified dataset was uploaded to Streamlit.
+
+The dashboard correctly updated the following metrics:
+
+- Total Revenue: Increased from $42,174,440 to $42,175,440.
+- Website Revenue: Increased from $27,218,880 to $27,219,880.
+- Brick-and-Mortar Revenue: Remained $14,955,560.
+- Sales Records: Remained 25,200.
+
+The original Sales dataset was restored after testing.
+
+This confirms that the dashboard recalculates revenue when the underlying uploaded data changes rather than relying on hardcoded totals.
+
+**Result: Passed**
+
 ### Data Import and Preparation
 
 The application uses Pandas to import the five uploaded Excel and CSV datasets. Revenue values are converted to numeric format, and sales dates are converted to datetime format for analysis.
@@ -135,4 +154,4 @@ The missing City values are associated with website sales, which do not have a p
 
 - Test additional missing required fields in the uploaded datasets.
 - Compare Streamlit revenue calculations against Power BI results for independent verification.
-- Perform the required $1,000 modified-revenue test.
+
