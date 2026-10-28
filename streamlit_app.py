@@ -100,7 +100,10 @@ if all([sales_file, products_file, categories_file,
     data["Revenue"] = pd.to_numeric(
         data["Revenue"], errors="coerce"
     )
-
+    if data["Revenue"].isna().any():
+        st.error("Some sales records have missing or invalid revenue values.")
+        st.stop()
+    
     st.success("All five datasets uploaded successfully!")
     
     survey_duplicate_count = survey.duplicated(
