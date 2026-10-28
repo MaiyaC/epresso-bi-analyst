@@ -59,10 +59,21 @@ if all([sales_file, products_file, categories_file,
         products, on="Product ID", how="left",
         validate="many_to_one"
     )
+    
+    products_merge_rows = len(data)
+    products_merge_revenue = pd.to_numeric(
+        data["Revenue"], errors="coerce"
+    ).sum()
+            
     data = data.merge(
         categories, on="Category ID", how="left",
         validate="many_to_one"
     )
+       categories_merge_rows = len(data)
+    categories_merge_revenue = pd.to_numeric(
+        data["Revenue"], errors="coerce"
+    ).sum()
+
     data = data.merge(
         stores[["ID", "City", "StoreType"]],
         left_on="Store ID", right_on="ID",
