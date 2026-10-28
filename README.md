@@ -128,6 +128,20 @@ The Power BI revenue figures matched the Streamlit results exactly, confirming c
 
 **Result: Passed**
 
+### Missing Revenue Validation Test
+
+To test how the application handles missing revenue data, a separate copy of Sales.xlsx was created, and the Revenue value in cell G2 ($6,780) was removed.
+
+During the initial test, the dashboard continued processing and displayed an incorrect total revenue of $42,167,660 instead of $42,174,440.
+
+To resolve this issue, additional validation was added to detect missing or invalid Revenue values and stop processing when they are found.
+
+After implementing the fix, the modified dataset was uploaded again. The application correctly displayed the error message "Some sales records have missing or invalid revenue values." and stopped processing.
+
+The original Sales dataset was restored, and the dashboard resumed normal operation.
+
+**Result: Passed after correction**
+
 ### Data Import and Preparation
 
 The application uses Pandas to import the five uploaded Excel and CSV datasets. Revenue values are converted to numeric format, and sales dates are converted to datetime format for analysis.
@@ -166,5 +180,5 @@ The missing City values are associated with website sales, which do not have a p
 
 ### Additional Validation Still Required
 
-- Test additional missing required fields in the uploaded datasets.
+- Continue testing other required fields for missing or invalid values as part of final application testing.
 
