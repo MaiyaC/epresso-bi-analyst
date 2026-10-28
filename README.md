@@ -64,12 +64,14 @@ The application uses `validate="many_to_one"` to verify that each sales record m
 
 Additional validation compares the original Sales row count and total revenue with the merged dataset. If either changes unexpectedly, the application displays an error and stops processing.
 
-| Validation Measure | Original Sales | After All Three Merges |
+| Merge Stage | Sales Records | Total Revenue |
 |---|---:|---:|
-| Sales records | 25,200 | 25,200 |
-| Total revenue | $42,174,440 | $42,174,440 |
+| Original Sales | 25,200 | $42,174,440 |
+| After Products | 25,200 | $42,174,440 |
+| After Categories | 25,200 | $42,174,440 |
+| After Stores | 25,200 | $42,174,440 |
 
-These values reflect the original E-Presso dataset. Individual before-and-after results for each merge still need to be recorded.
+All three merges preserved the original 25,200 sales records and total revenue of $42,174,440. This confirms that the joins did not duplicate or remove sales transactions or alter total revenue in the original dataset.
 
 ### Data Quality Findings
 
@@ -83,7 +85,6 @@ The missing City values are associated with website sales, which do not have a p
 
 ### Additional Validation Still Required
 
-- Record row counts and revenue totals after each individual merge.
 - Verify that all Sales foreign keys match their corresponding lookup tables.
 - Test how the application handles missing or invalid uploaded data.
 - Complete independent revenue calculations and compare results with Power BI.
