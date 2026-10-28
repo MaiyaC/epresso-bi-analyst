@@ -95,7 +95,20 @@ if all([sales_file, products_file, categories_file,
     )
 
     st.success("All five datasets uploaded successfully!")
-   
+    merge_summary = pd.DataFrame({
+        "Stage": ["Original Sales", "After Products", "After Categories", "After Stores"],
+        "Rows": [
+            original_sales_rows, products_merge_rows,
+            categories_merge_rows, merged_sales_rows
+        ],
+        "Revenue": [
+            original_sales_revenue, products_merge_revenue,
+            categories_merge_revenue, merged_sales_revenue
+        ]
+    })
+
+    st.dataframe(merge_summary, hide_index=True)
+
     survey_duplicate_count = survey.duplicated(
         subset=["Store ID", "Year"]
     ).sum()
