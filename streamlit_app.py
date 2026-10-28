@@ -89,6 +89,13 @@ if all([sales_file, products_file, categories_file,
         st.error("Data merge changed the sales row count or total revenue.")
         st.stop()
                 
+    unmatched_products = (~sales["Product ID"].isin(products["Product ID"])).sum()
+    unmatched_categories = (~sales["Category ID"].isin(categories["Category ID"])).sum()
+    unmatched_stores = (~sales["Store ID"].isin(stores["ID"])).sum()
+
+    if unmatched_products or unmatched_categories or unmatched_stores:
+        st.error("Some sales records have unmatched lookup IDs.")
+        st.stop()            
     data["Date"] = pd.to_datetime(data["Date"])
     data["Revenue"] = pd.to_numeric(
         data["Revenue"], errors="coerce"
