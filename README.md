@@ -80,12 +80,14 @@ All three merges preserved the original 25,200 sales records and total revenue o
 - Survey records: 105
 - Missing City values: 1,200 in the full dataset
 - Missing City values associated with brick-and-mortar sales: 0
+- Unmatched Sales Product IDs: 0
+- Unmatched Sales Category IDs: 0
+- Unmatched Sales Store IDs: 0
 
 The missing City values are associated with website sales, which do not have a physical store city in the current dataset.
 
 ### Additional Validation Still Required
 
-- Verify that all Sales foreign keys match their corresponding lookup tables.
 - Test how the application handles missing or invalid uploaded data.
 - Complete independent revenue calculations and compare results with Power BI.
 - Perform the required $1,000 modified-revenue test.
