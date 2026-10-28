@@ -114,6 +114,20 @@ This confirms that the dashboard recalculates revenue when the underlying upload
 
 **Result: Passed**
 
+### Power BI Revenue Verification
+
+Revenue calculations from the Streamlit dashboard were independently compared against the original Power BI report.
+
+The following results matched:
+
+- Website Revenue: $27,218,880
+- Brick-and-Mortar Revenue: $14,955,560
+- Combined Total Revenue: $42,174,440
+
+The Power BI revenue figures matched the Streamlit results exactly, confirming consistency between the two applications.
+
+**Result: Passed**
+
 ### Data Import and Preparation
 
 The application uses Pandas to import the five uploaded Excel and CSV datasets. Revenue values are converted to numeric format, and sales dates are converted to datetime format for analysis.
@@ -153,5 +167,4 @@ The missing City values are associated with website sales, which do not have a p
 ### Additional Validation Still Required
 
 - Test additional missing required fields in the uploaded datasets.
-- Compare Streamlit revenue calculations against Power BI results for independent verification.
 
