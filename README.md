@@ -60,6 +60,16 @@ The original Sales dataset was then restored, confirming that the application co
 
 **Result: Passed**
 
+### Missing Data Validation Test
+
+To test how the application handles missing required data, a separate copy of the Sales dataset was created. The Product ID in cell F2 was removed, leaving the field blank.
+
+When the modified dataset was uploaded, the application correctly displayed the error message "Some sales records have unmatched lookup IDs." and stopped processing.
+
+The original Sales dataset was restored, and the dashboard resumed normal operation.
+
+**Result: Passed**
+
 ### Data Import and Preparation
 
 The application uses Pandas to import the five uploaded Excel and CSV datasets. Revenue values are converted to numeric format, and sales dates are converted to datetime format for analysis.
@@ -98,6 +108,6 @@ The missing City values are associated with website sales, which do not have a p
 
 ### Additional Validation Still Required
 
-- Test how the application handles missing required data and incorrect file formats.
+- Test additional missing required fields and incorrect file formats.
 - Complete independent revenue calculations and compare results with Power BI.
 - Perform the required $1,000 modified-revenue test.
