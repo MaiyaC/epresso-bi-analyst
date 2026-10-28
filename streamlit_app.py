@@ -69,7 +69,7 @@ if all([sales_file, products_file, categories_file,
         categories, on="Category ID", how="left",
         validate="many_to_one"
     )
-       categories_merge_rows = len(data)
+    categories_merge_rows = len(data)
     categories_merge_revenue = pd.to_numeric(
         data["Revenue"], errors="coerce"
     ).sum()
