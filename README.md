@@ -70,6 +70,16 @@ The original Sales dataset was restored, and the dashboard resumed normal operat
 
 **Result: Passed**
 
+### Incorrect File Format Validation Test
+
+To test file format restrictions, a separate copy of the Sales dataset was saved as a CSV file named Sales_Format_Test.csv.
+
+When attempting to upload this file, the Streamlit Sales uploader blocked the CSV format because it only accepts Excel (.xlsx) files.
+
+The original Sales.xlsx file was restored, and the dashboard continued operating normally.
+
+**Result: Passed**
+
 ### Data Import and Preparation
 
 The application uses Pandas to import the five uploaded Excel and CSV datasets. Revenue values are converted to numeric format, and sales dates are converted to datetime format for analysis.
@@ -108,6 +118,6 @@ The missing City values are associated with website sales, which do not have a p
 
 ### Additional Validation Still Required
 
-- Test additional missing required fields and incorrect file formats.
+- Test additional missing required fields in the uploaded datasets.
 - Complete independent revenue calculations and compare results with Power BI.
 - Perform the required $1,000 modified-revenue test.
