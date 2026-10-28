@@ -50,6 +50,16 @@ For survey-based revenue analysis, sales must first be aggregated to the appropr
 
 ## Data Validation and Merge Checks
 
+### Invalid Data Validation Test
+
+To test error handling, one Product ID in a separate copy of the Sales dataset was changed from P01 to P999, which does not exist in the Products lookup table.
+
+When the modified dataset was uploaded, the application correctly displayed the error message "Some sales records have unmatched lookup IDs." and stopped processing.
+
+The original Sales dataset was then restored, confirming that the application could resume normal operation with valid data.
+
+**Result: Passed**
+
 ### Data Import and Preparation
 
 The application uses Pandas to import the five uploaded Excel and CSV datasets. Revenue values are converted to numeric format, and sales dates are converted to datetime format for analysis.
@@ -88,6 +98,6 @@ The missing City values are associated with website sales, which do not have a p
 
 ### Additional Validation Still Required
 
-- Test how the application handles missing or invalid uploaded data.
+- Test how the application handles missing required data and incorrect file formats.
 - Complete independent revenue calculations and compare results with Power BI.
 - Perform the required $1,000 modified-revenue test.
