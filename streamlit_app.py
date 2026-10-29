@@ -420,6 +420,9 @@ if all([sales_file, products_file, categories_file,
         st.subheader("AI Analyst Response")
         st.write(result["answer"])
 
+        if result.get("error_type"):
+            st.error(f"AI Error Type: {result['error_type']}")
+
         with st.expander("View Analytical Tool-Call Log"):
             if result["tool_log"]:
                 for call in result["tool_log"]:
