@@ -107,12 +107,6 @@ if all([sales_file, products_file, categories_file,
     
     st.success("All five datasets uploaded successfully!")
 
-     # Temporary test of revenue by channel function
-    channel_test = get_revenue_by_channel(data)
-
-    st.subheader("Analytical Function Test")
-    st.json(channel_test)
-
     
     survey_duplicate_count = survey.duplicated(
         subset=["Store ID", "Year"]
