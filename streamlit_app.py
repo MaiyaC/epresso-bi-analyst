@@ -107,11 +107,6 @@ if all([sales_file, products_file, categories_file,
     
     st.success("All five datasets uploaded successfully!")
 
-    # Temporary test of category performance function
-    category_test = get_category_performance(data)
-
-    st.subheader("Category Performance Function Test")
-    st.json(category_test)
     
     survey_duplicate_count = survey.duplicated(
         subset=["Store ID", "Year"]
