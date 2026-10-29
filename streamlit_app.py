@@ -2,7 +2,13 @@
 import streamlit as st
 import pandas as pd
 import altair as alt
-from analytics import get_revenue_by_channel, get_category_performance
+from analytics import (
+    get_revenue_by_channel,
+    get_category_performance,
+    get_monthly_revenue_share,
+    get_store_trend,
+    get_data_quality_report,
+)
 
 st.set_page_config(
     page_title="E-Presso Business Intelligence",
@@ -107,6 +113,21 @@ if all([sales_file, products_file, categories_file,
     
     st.success("All five datasets uploaded successfully!")
 
+    # Temporary combined analytical function test
+    st.subheader("Combined Analytical Function Test")
+
+    monthly_test = get_monthly_revenue_share(data)
+    store_test = get_store_trend(data)
+    quality_test = get_data_quality_report(data)
+
+    with st.expander("Monthly Revenue Share Results"):
+        st.json(monthly_test)
+
+    with st.expander("Store Trend Results"):
+        st.json(store_test)
+
+    with st.expander("Data Quality Results"):
+        st.json(quality_test)
     
     survey_duplicate_count = survey.duplicated(
         subset=["Store ID", "Year"]
