@@ -191,4 +191,8 @@ def answer_business_question(question, data, api_key):
             ),
             "tool_log": tool_log,
             "error_type": type(error).__name__,
+            "error_details": str(error),
         }
+
+
+
