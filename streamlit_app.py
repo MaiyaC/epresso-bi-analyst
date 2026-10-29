@@ -422,6 +422,9 @@ if all([sales_file, products_file, categories_file,
 
         if result.get("error_type"):
             st.error(f"AI Error Type: {result['error_type']}")
+        if result.get("error_details"):
+            st.error(f"AI Error Details: {result['error_details']}")
+
 
         with st.expander("View Analytical Tool-Call Log"):
             if result["tool_log"]:
