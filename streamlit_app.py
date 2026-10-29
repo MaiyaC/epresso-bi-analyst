@@ -9,7 +9,7 @@ from analytics import (
     get_store_trend,
     get_data_quality_report,
 )
-
+from agent import answer_business_question
 st.set_page_config(
     page_title="E-Presso Business Intelligence",
     layout="wide"
@@ -367,6 +367,79 @@ if all([sales_file, products_file, categories_file,
 
     st.write("Survey records:", len(survey))
 
+    # AI Business Intelligence Analyst
+    st.divider()
+    st.header("Ask the E-Presso AI Analyst")
+
+    st.write(
+        "Ask questions about revenue, product categories, "
+        "monthly trends, physical stores, or data quality."
+    )
+
+    if "ai_questions_used" not in st.session_state:
+        st.session_state.ai_questions_used = 0
+
+    if "ai_last_result" not in st.session_state:
+        st.session_state.ai_last_result = None
+
+    question_limit = 5
+    remaining = question_limit - st.session_state.ai_questions_used
+
+    st.caption(f"Questions remaining this session: {remaining}")
+
+    question = st.text_input(
+        "Enter your business question:",
+        placeholder="Which product category generates the most revenue?",
+        key="ai_business_question",
+    )
+
+    if st.button(
+        "Ask AI Analyst",
+        disabled=remaining <= 0,
+    ):
+        if not question.strip():
+            st.warning("Please enter a business question.")
+        else:
+            api_key = st.secrets.get("GEMINI_API_KEY", "")
+
+            with st.spinner("Analyzing your business data..."):
+                result = answer_business_question(
+                    question=question,
+                    data=data,
+                    api_key=api_key,
+                )
+
+            st.session_state.ai_questions_used += 1
+            st.session_state.ai_last_result = result
+
+            st.rerun()
+
+    if st.session_state.ai_last_result is not None:
+        result = st.session_state.ai_last_result
+
+        st.subheader("AI Analyst Response")
+        st.write(result["answer"])
+
+        with st.expander("View Analytical Tool-Call Log"):
+            if result["tool_log"]:
+                for call in result["tool_log"]:
+                    st.write("Function:", call["function"])
+                    st.write("Arguments:", call["arguments"])
+                    st.write("Raw Result:")
+                    st.json(call["raw_result"])
+            else:
+                st.info("No analytical function was called.")
+
+    if remaining <= 0:
+        st.info(
+            "You have reached the five-question limit "
+            "for this session."
+        )
+
+
+
 else:
     st.info("Upload all five E-Presso files to begin.")
+
+
 
