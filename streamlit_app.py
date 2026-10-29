@@ -2,6 +2,7 @@
 import streamlit as st
 import pandas as pd
 import altair as alt
+from analytics import get_revenue_by_channel
 
 st.set_page_config(
     page_title="E-Presso Business Intelligence",
