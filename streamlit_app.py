@@ -2,7 +2,7 @@
 import streamlit as st
 import pandas as pd
 import altair as alt
-from analytics import get_revenue_by_channel
+from analytics import get_revenue_by_channel, get_category_performance
 
 st.set_page_config(
     page_title="E-Presso Business Intelligence",
@@ -107,6 +107,11 @@ if all([sales_file, products_file, categories_file,
     
     st.success("All five datasets uploaded successfully!")
 
+    # Temporary test of category performance function
+    category_test = get_category_performance(data)
+
+    st.subheader("Category Performance Function Test")
+    st.json(category_test)
     
     survey_duplicate_count = survey.duplicated(
         subset=["Store ID", "Year"]
