@@ -10,6 +10,8 @@ from analytics import (
     get_data_quality_report,
 )
 from agent import answer_business_question
+from google import genai
+
 st.set_page_config(
     page_title="E-Presso Business Intelligence",
     layout="wide"
@@ -444,8 +446,27 @@ if all([sales_file, products_file, categories_file,
 
 
 
+
 else:
     st.info("Upload all five E-Presso files to begin.")
 
 
+# Temporary Gemini API connection test
+with st.expander("Gemini Connection Test"):
+    if st.button("Test Gemini Connection"):
+        try:
+            client = genai.Client(
+                api_key=st.secrets["GEMINI_API_KEY"]
+            )
+
+            response = client.models.generate_content(
+                model="gemini-3-flash-preview",
+                contents="What is 2 + 2?",
+            )
+
+            st.success("Gemini connection successful!")
+            st.write(response.text)
+
+        except Exception as error:
+            st.error(f"Connection test failed: {type(error).__name__}"
 
