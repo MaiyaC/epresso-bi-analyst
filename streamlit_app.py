@@ -468,5 +468,5 @@ with st.expander("Gemini Connection Test"):
             st.write(response.text)
 
         except Exception as error:
-            st.error(f"Connection test failed: {type(error).__name__}"
+            st.error(f"Connection test failed: {type(error).__name__}")
 
