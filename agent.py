@@ -102,7 +102,7 @@ def answer_business_question(question, data, api_key):
         ]
 
         selection = client.models.generate_content(
-            model="gemini-2.5-flash-lite",
+            model="gemini-3-flash-preview",
             contents=question,
             config=types.GenerateContentConfig(
                 system_instruction=(
@@ -157,7 +157,7 @@ def answer_business_question(question, data, api_key):
             )
 
         final_response = client.models.generate_content(
-            model="gemini-2.5-flash-lite",
+            model="gemini-3-flash-preview",
             contents=[
                 types.Content(
                     role="user",
