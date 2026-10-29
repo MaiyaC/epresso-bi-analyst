@@ -113,30 +113,6 @@ if all([sales_file, products_file, categories_file,
     
     st.success("All five datasets uploaded successfully!")
 
-    # Temporary combined analytical function test
-    st.subheader("Analytical Function Test Summary")
-
-    monthly_test = get_monthly_revenue_share(data)
-    store_test = get_store_trend(data)
-    quality_test = get_data_quality_report(data)
-
-    st.write("Monthly Revenue Status:", monthly_test["status"])
-    st.write("Monthly Records:", len(monthly_test.get("monthly_results", [])))
-
-    monthly_df = pd.DataFrame(monthly_test.get("monthly_results", []))
-    if not monthly_df.empty:
-        yearly_totals = monthly_df.groupby("year")["share_percent"].sum()
-        st.write("Monthly Percentages by Year:")
-        st.dataframe(yearly_totals.round(2))
-
-    st.write("Store Trend Status:", store_test["status"])
-    st.write("Store Trend Records:", len(store_test.get("store_trends", [])))
-
-    st.write("Data Quality Status:", quality_test["status"])
-    st.write("Total Sales Records:", quality_test.get("total_records"))
-    st.write("Duplicate Sales IDs:", quality_test.get("duplicate_sales_ids"))
-    st.write("Missing Values:", quality_test.get("missing_values_by_column"))
-
     
     survey_duplicate_count = survey.duplicated(
         subset=["Store ID", "Year"]
