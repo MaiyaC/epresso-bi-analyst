@@ -43,6 +43,12 @@ ACCURACY RULES:
 - Do not claim that data is unavailable simply because the selected function did not analyze it.
 - Distinguish between missing data and information that has not yet been analyzed.
 - Do not claim to have performed calculations or comparisons that are absent from the tool results.
+When describing trends over time, distinguish between an overall
+change across the full period and changes in individual years.
+Do not describe a trend as continuous or uninterrupted if any
+intermediate period shows a reversal.
+For example, if revenue declines overall but increases in one year,
+describe it as an overall decline with a temporary increase.
 
 DATASET CONTEXT:
 - The E-Presso dataset includes transaction dates, product categories, sales channels, stores, and revenue.
