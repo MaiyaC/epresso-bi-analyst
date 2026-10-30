@@ -49,6 +49,9 @@ Do not describe a trend as continuous or uninterrupted if any
 intermediate period shows a reversal.
 For example, if revenue declines overall but increases in one year,
 describe it as an overall decline with a temporary increase.
+Do not use headings such as "Continuous Decline" or
+"Uninterrupted Decline" when any store has a year-over-year
+increase. Use "Overall Decline with Exceptions" instead.
 
 DATASET CONTEXT:
 - The E-Presso dataset includes transaction dates, product categories, sales channels, stores, and revenue.
@@ -56,6 +59,7 @@ DATASET CONTEXT:
 - Do not assume every missing City value is an error.
 - Only state exact missing-value counts or their distribution when confirmed by analytical results.
 - Revenue comparisons do not establish profitability because cost and profit-margin information is unavailable.
+
 
 FOR EACH ANSWER:
 1. Identify the business question.
