@@ -243,3 +243,117 @@ Both tests passed. Together, they provide evidence of independent calculation ac
 
 These tests verify the specific calculations and data changes described above; they do not establish that every possible AI question or dataset variation has been tested.
 
+
+## Power BI vs. Streamlit Dashboard Validation
+
+### Objective
+
+Verify that the E-Presso Streamlit dashboard produces results consistent with the original Power BI report, including when product category filters are applied.
+
+### Validation Method
+
+The original five E-Presso datasets were used for both applications. Annual revenue, monthly revenue percentages, and sales channel revenue were compared using the unfiltered dataset and the Espresso Machines category filter.
+
+Power BI displays rounded revenue values, while Streamlit displays exact dollar amounts. Therefore, comparisons involving rounded Power BI values confirm agreement at the displayed precision rather than exact dollar-for-dollar equality.
+
+### Test 1: Overall Annual Revenue
+
+| Year | Power BI (Rounded) | Streamlit (Exact) | Result |
+|---|---:|---:|---|
+| 2025 | $7.18M | $7,181,750 | Match |
+| 2026 | $8.02M | $8,016,950 | Match |
+| 2027 | $8.82M | $8,824,720 | Match |
+| 2028 | $8.97M | $8,969,470 | Match |
+| 2029 | $9.18M | $9,181,550 | Match |
+
+**Outcome: PASS**
+
+All five annual revenue values agree at Power BI's displayed precision. The Streamlit annual values total $42,174,440, matching the independent Excel calculation.
+
+### Test 2: Overall Monthly Revenue Percentages
+
+| Month | Power BI | Streamlit |
+|---|---:|---:|
+| January | 7.74% | 7.74% |
+| February | 3.83% | 3.83% |
+| March | 4.44% | 4.44% |
+| April | 5.15% | 5.15% |
+| May | 5.72% | 5.72% |
+| June | 6.50% | 6.50% |
+| July | 6.42% | 6.42% |
+| August | 6.45% | 6.45% |
+| September | 7.11% | 7.11% |
+| October | 8.31% | 8.31% |
+| November | 12.71% | 12.71% |
+| December | 25.61% | 25.61% |
+
+**Outcome: PASS**
+
+All 12 monthly revenue percentages match to two decimal places.
+
+### Test 3: Overall Revenue by Sales Channel
+
+| Sales Channel | Power BI (Rounded) | Streamlit (Exact) |
+|---|---:|---:|
+| Website | $27M | $27,218,880 |
+| Brick & Mortar | $15M | $14,955,560 |
+
+**Outcome: PASS**
+
+Both sales channel totals agree with the rounded Power BI chart values.
+
+### Test 4: Espresso Machines Annual Revenue
+
+The Espresso Machines category was selected in both dashboards.
+
+| Year | Power BI (Rounded) | Streamlit (Exact) | Result |
+|---|---:|---:|---|
+| 2025 | $4.55M | $4,549,140 | Match |
+| 2026 | $5.09M | $5,092,030 | Match |
+| 2027 | $5.62M | $5,623,240 | Match |
+| 2028 | $5.82M | $5,822,640 | Match |
+| 2029 | $6.01M | $6,006,170 | Match |
+
+**Outcome: PASS**
+
+All five filtered annual revenue values agree at Power BI's displayed precision.
+
+### Test 5: Espresso Machines Monthly Revenue Percentages
+
+| Month | Power BI | Streamlit |
+|---|---:|---:|
+| January | 7.79% | 7.79% |
+| February | 3.83% | 3.83% |
+| March | 4.43% | 4.43% |
+| April | 5.15% | 5.15% |
+| May | 5.72% | 5.72% |
+| June | 6.53% | 6.53% |
+| July | 6.41% | 6.41% |
+| August | 6.47% | 6.47% |
+| September | 7.15% | 7.15% |
+| October | 8.30% | 8.30% |
+| November | 12.60% | 12.60% |
+| December | 25.62% | 25.62% |
+
+**Outcome: PASS**
+
+All 12 monthly percentages match to two decimal places with the Espresso Machines filter applied.
+
+### Test 6: Espresso Machines Revenue by Sales Channel
+
+| Sales Channel | Power BI (Rounded) | Streamlit (Exact) |
+|---|---:|---:|
+| Website | $18M | $17,505,020 |
+| Brick & Mortar | $10M | $9,588,200 |
+
+**Outcome: PASS**
+
+Both filtered sales channel totals are consistent with Power BI's rounded values. Streamlit reports $27,093,220 in total Espresso Machines revenue, matching the previously tested `get_category_performance` function.
+
+### Overall Validation Findings
+
+All six dashboard comparisons passed at the precision displayed in Power BI. These results provide evidence that Streamlit reproduces the original report's revenue calculations, monthly revenue distributions, and category-filter behavior.
+
+The comparisons were performed using the original datasets. Additional validation was completed separately through an independent Excel calculation and a modified-data test, both documented above.
+
+The comparisons establish agreement for the tested metrics and filter selections, but do not establish correctness for every possible dataset or filter combination.
