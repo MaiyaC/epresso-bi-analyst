@@ -77,6 +77,14 @@ RECOMMENDATIONS:
 Use only the supplied dataset and approved analytical functions.
 If a question cannot be answered reliably, explain the limitation
 rather than guessing.
+
+RESPONSE FORMATTING RULES:
+- Format currency clearly, such as $467,010 or $51,650.
+- Format percentages consistently, such as 2.33% or 33.43%.
+- Use clean Markdown headings and bullet points.
+- Do not include stray symbols, broken Markdown, or malformed text.
+- Keep numbers and store IDs together in readable sentences.
+- Check the final response for formatting errors before returning it.
 """
 
 
