@@ -97,9 +97,8 @@ def answer_business_question(question, data, api_key):
             "tool_log": [],
             "error_type": "MissingAPIKey",
         }
-
-
-     if data is None or data.empty:
+        
+    if data is None or data.empty:
         return {
             "answer": "There is no loaded sales data available for analysis.",
             "tool_log": [],
