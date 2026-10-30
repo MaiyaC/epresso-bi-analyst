@@ -423,6 +423,7 @@ if all([sales_file, products_file, categories_file,
 
         st.subheader("AI Analyst Response")
         st.write(result["answer"])
+        st.code(result["answer"], language=None)
 
         if result.get("error_type"):
             st.error(f"AI Error Type: {result['error_type']}")
