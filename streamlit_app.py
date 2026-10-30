@@ -384,7 +384,7 @@ if all([sales_file, products_file, categories_file,
     if "ai_last_result" not in st.session_state:
         st.session_state.ai_last_result = None
 
-    question_limit = 5
+    question_limit = 15
     remaining = question_limit - st.session_state.ai_questions_used
 
     st.caption(f"Questions remaining this session: {remaining}")
@@ -410,9 +410,11 @@ if all([sales_file, products_file, categories_file,
                     data=data,
                     api_key=api_key,
                 )
+            if result.get("error_type") is None:
+                st.session_state.ai_questions_used += 1
 
-            st.session_state.ai_questions_used += 1
             st.session_state.ai_last_result = result
+
 
             st.rerun()
 
