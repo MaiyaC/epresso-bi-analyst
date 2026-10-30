@@ -91,16 +91,19 @@ def answer_business_question(question, data, api_key):
             "tool_log": [],
         }
 
-    if not api_key:
+     if not api_key:
         return {
             "answer": "The AI service is not configured. Please contact the dashboard administrator.",
             "tool_log": [],
+            "error_type": "MissingAPIKey",
         }
 
-    if data is None or data.empty:
+
+     if data is None or data.empty:
         return {
             "answer": "There is no loaded sales data available for analysis.",
             "tool_log": [],
+            "error_type": "MissingData",
         }
 
     tool_log = []
