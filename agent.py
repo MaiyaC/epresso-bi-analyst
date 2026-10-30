@@ -97,7 +97,7 @@ def answer_business_question(question, data, api_key):
             "tool_log": [],
             "error_type": "MissingAPIKey",
         }
-        
+
     if data is None or data.empty:
         return {
             "answer": "There is no loaded sales data available for analysis.",
@@ -105,7 +105,7 @@ def answer_business_question(question, data, api_key):
             "error_type": "MissingData",
         }
 
-      tool_log = []
+    tool_log = []
 
     try:
         client = genai.Client(api_key=api_key)
