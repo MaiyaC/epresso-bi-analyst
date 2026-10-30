@@ -182,3 +182,64 @@ The missing City values are associated with website sales, which do not have a p
 
 - Continue testing other required fields for missing or invalid values as part of final application testing.
 
+## Independent Calculation and AI Validation Tests
+
+### Test 1: Independent Excel Revenue Calculation
+
+**Objective:** Verify that the dashboard's total revenue matches an independently calculated result in Excel.
+
+**Procedure:**
+1. Opened the original `Sales.xlsx` dataset containing 25,200 sales records.
+2. Entered the Excel formula `=SUM(G2:G25201)` in cell G25202.
+3. Compared the Excel result with the total revenue reported by the Streamlit dashboard and AI Analyst.
+4. Removed the temporary formula afterward to preserve the original dataset.
+
+**Results:**
+
+| Measurement | Result |
+|---|---:|
+| Total sales records | 25,200 |
+| Independent Excel calculation | $42,174,440 |
+| Dashboard and AI revenue | $42,174,440 |
+| Difference | $0 |
+
+**Outcome: PASS**
+
+The independent Excel calculation matched the dashboard and AI revenue totals, confirming the accuracy of the overall revenue aggregation for the original dataset.
+
+### Test 2: Modified Dataset and AI Recalculation
+
+**Objective:** Verify that the dashboard and AI Analyst recalculate results when the underlying dataset changes.
+
+**Procedure:**
+1. Used a separate test copy of the Sales dataset with one Website transaction's revenue increased by $1,000.
+2. Uploaded the modified Sales file along with the four unchanged supporting datasets.
+3. Confirmed that the dashboard displayed the updated revenue.
+4. Asked the AI Analyst: "What is E-Presso's total revenue across all sales channels?"
+5. Examined the analytical tool-call log to verify the function used and its raw calculated results.
+6. Restored the original dataset after testing.
+
+**Results:**
+
+| Measurement | Original Dataset | Modified Dataset |
+|---|---:|---:|
+| Total revenue | $42,174,440 | $42,175,440 |
+| Website revenue | $27,218,880 | $27,219,880 |
+| Brick & Mortar revenue | $14,955,560 | $14,955,560 |
+
+**Analytical function:** `get_revenue_by_channel`
+
+**Function arguments:** `{}`
+
+**Verified raw result:** `total_revenue = 42175440`
+
+**Outcome: PASS**
+
+The dashboard and AI Analyst correctly reflected the $1,000 increase. The AI's reported figures matched the raw analytical function output, demonstrating that its numerical answers are based on the currently uploaded dataset rather than fixed or previously calculated values.
+
+### Validation Summary
+
+Both tests passed. Together, they provide evidence of independent calculation accuracy, approved analytical function usage, transparent tool-call logging, and recalculation when source data changes.
+
+These tests verify the specific calculations and data changes described above; they do not establish that every possible AI question or dataset variation has been tested.
+
