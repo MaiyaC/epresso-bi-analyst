@@ -91,7 +91,7 @@ def answer_business_question(question, data, api_key):
             "tool_log": [],
         }
 
-     if not api_key:
+    if not api_key:
         return {
             "answer": "The AI service is not configured. Please contact the dashboard administrator.",
             "tool_log": [],
@@ -106,7 +106,7 @@ def answer_business_question(question, data, api_key):
             "error_type": "MissingData",
         }
 
-    tool_log = []
+      tool_log = []
 
     try:
         client = genai.Client(api_key=api_key)
