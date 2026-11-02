@@ -358,6 +358,24 @@ The comparisons were performed using the original datasets. Additional validatio
 
 The comparisons establish agreement for the tested metrics and filter selections, but do not establish correctness for every possible dataset or filter combination.
 
+
+## AI Analyst Analytical Functions
+
+The AI Analyst uses six approved analytical functions to answer business questions using calculations from the uploaded datasets.
+
+1. `get_revenue_by_channel` – Compares revenue across Website and Brick & Mortar sales channels.
+
+2. `get_category_performance` – Analyzes revenue and revenue share by product category.
+
+3. `get_monthly_revenue_share` – Calculates monthly revenue as a percentage of annual revenue.
+
+4. `get_store_trend` – Analyzes annual revenue trends for physical stores.
+
+5. `get_data_quality_report` – Identifies missing values and duplicate Sales IDs.
+
+6. `get_customer_satisfaction_analysis` – Compares customer satisfaction scores with annual physical-store revenue by matching Store ID and Year. Records with missing satisfaction scores are excluded, and observed relationships are not treated as evidence of causation.
+
+
 ## AI Analyst Testing and Evaluation
 | Test | Question | Analytical Function | Expected Result / Behavior | Actual Result | Outcome | Revision Made |
 |---|---|---|---|---|---|---|
