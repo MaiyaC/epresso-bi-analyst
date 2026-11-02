@@ -6,7 +6,7 @@ This project is a Python-based business intelligence application developed using
 
 The application is designed to help users explore sales trends, compare website and brick-and-mortar revenue, and evaluate performance across product categories and years.
 
-The project also includes the development of an analytical assistant that will allow users to ask business questions and receive answers based on calculations performed using the uploaded datasets.
+The application also includes a Gemini-powered AI Analyst that allows users to ask business questions and receive answers supported by six approved analytical functions. These functions calculate results directly from the uploaded datasets, including revenue comparisons, product category performance, monthly revenue patterns, physical-store trends, data quality, and customer satisfaction. An analytical tool-call log provides transparency into the functions used and their calculated results.
 
 ## Technologies Used
 
@@ -178,9 +178,12 @@ All three merges preserved the original 25,200 sales records and total revenue o
 
 The missing City values are associated with website sales, which do not have a physical store city in the current dataset.
 
-### Additional Validation Still Required
+### Validation Scope and Limitations
 
-- Continue testing other required fields for missing or invalid values as part of final application testing.
+The application was tested for invalid lookup IDs, missing required values, incorrect file formats, revenue calculation accuracy, merge consistency, and updated-data recalculation.
+
+These tests confirm the application's behavior under the specific conditions evaluated. They do not guarantee that every possible invalid dataset or user input has been tested.
+
 
 ## Independent Calculation and AI Validation Tests
 
@@ -380,7 +383,8 @@ The AI Analyst uses six approved analytical functions to answer business questio
 | Test | Question | Analytical Function | Expected Result / Behavior | Actual Result | Outcome | Revision Made |
 |---|---|---|---|---|---|---|
 | 1. Numerical Calculation | What is E-Presso's total revenue across all sales channels? | `get_revenue_by_channel` | Calculate $42,174,440 from the original uploaded dataset. | The AI returned $42,174,440, matching the independent Excel calculation. | PASS | None required. |
-| 2. Numerical Comparison | Revenue comparisons across E-Presso sales channels and product categories. | `get_revenue_by_channel`, `get_category_performance` | Compare calculated revenue using the original dataset without inventing figures. | Revenue totals were verified during earlier analytical-function testing; the exact AI question and response still need to be recorded. | Evidence incomplete | None documented. |
-| 3. Missing Information | Can E-Presso's net profit be determined from the available data? | No calculation sufficient | Recognize that revenue alone cannot establish net profit without expenses. | Unsupported profitability questions were tested previously; the exact response needs confirmation. | Evidence incomplete | None documented. |
+| 2. Numerical Comparison | How does Website revenue compare with Brick & Mortar revenue? | `get_revenue_by_channel` | Compare calculated sales channel revenue without inventing figures. | Website revenue was $27,218,880 and Brick & Mortar revenue was $14,955,560, a difference of $12,263,320. The results matched the analytical tool-call log. | PASS | None required. |
+| 3. Missing Information | Which store is the most profitable? | No calculation sufficient | Recognize that revenue cannot establish profitability without cost information. | The AI correctly explained that profitability cannot be determined from the available revenue data because store-level costs and profit margins are unavailable. | PASS | None required. |
 | 4. Analytical Judgment | How has revenue changed over time for E-Presso's physical stores, and what should management investigate based on these trends? | `get_store_trend` | Interpret store-level trends accurately, distinguish overall declines from uninterrupted declines, and provide appropriately qualified recommendations. | The initial response incorrectly characterized every store as continuously declining. After instructions were revised, the retest correctly recognized that SH09 increased 2.33% in 2027. | PASS after correction | Revised `SYSTEM_INSTRUCTIONS` in `agent.py` and retested. |
 | 5. Updated Data | What is E-Presso's total revenue across all sales channels? | `get_revenue_by_channel` | After increasing one Website transaction by $1,000, report $42,175,440 rather than the original total. | The AI returned $42,175,440; the dashboard and analytical tool log confirmed the updated result. | PASS | None required. |
+| 6. Customer Satisfaction Analysis | How does customer satisfaction compare with annual revenue across physical stores? | `get_customer_satisfaction_analysis` | Match survey satisfaction scores with annual physical-store revenue using Store ID and Year, report calculated results, and avoid assuming causation. | The function successfully returned 100 matched store-year records and an average satisfaction score of 3.40. The AI compared store-level satisfaction and revenue, and the analytical tool-call log confirmed the reported figures. | PASS | Added the sixth analytical function and updated the AI instructions to support survey-based analysis. |
