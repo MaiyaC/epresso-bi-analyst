@@ -10,8 +10,8 @@ from analytics import (
     get_monthly_revenue_share,
     get_store_trend,
     get_data_quality_report,
+    get_customer_satisfaction_analysis,
 )
-
 
 ANALYTICAL_FUNCTIONS = {
     "get_revenue_by_channel": get_revenue_by_channel,
@@ -19,6 +19,7 @@ ANALYTICAL_FUNCTIONS = {
     "get_monthly_revenue_share": get_monthly_revenue_share,
     "get_store_trend": get_store_trend,
     "get_data_quality_report": get_data_quality_report,
+    "get_customer_satisfaction_analysis": get_customer_satisfaction_analysis,
 }
 
 TOOL_DESCRIPTIONS = {
@@ -27,6 +28,11 @@ TOOL_DESCRIPTIONS = {
     "get_monthly_revenue_share": "Analyze monthly revenue as a percentage of each year's revenue.",
     "get_store_trend": "Analyze annual revenue trends for physical stores.",
     "get_data_quality_report": "Check missing values and duplicate Sales IDs.",
+    "get_customer_satisfaction_analysis": (
+    "Compare customer satisfaction scores with annual physical-store "
+    "revenue by matching Store ID and Year. Report observed patterns "
+    "without claiming causation."
+),
 }
 
 SYSTEM_INSTRUCTIONS = """
@@ -59,6 +65,16 @@ DATASET CONTEXT:
 - Do not assume every missing City value is an error.
 - Only state exact missing-value counts or their distribution when confirmed by analytical results.
 - Revenue comparisons do not establish profitability because cost and profit-margin information is unavailable.
+- The application also uploads a Survey dataset containing Store ID,
+  Year, Satisfaction, and Interest fields.
+- Survey records are at the store-year level, not the individual
+  sales-transaction level.
+- Some survey values may be missing. Do not treat missing satisfaction
+  scores as zero.
+- Customer satisfaction can be analyzed using the approved
+  get_customer_satisfaction_analysis function.
+- Comparing satisfaction and revenue does not establish that
+  satisfaction causes revenue changes.
 
 
 FOR EACH ANSWER:
@@ -100,7 +116,7 @@ def _json_safe(value):
     )
 
 
-def answer_business_question(question, data, api_key):
+def answer_business_question(question, data, api_key, survey=None):
     """Ask Gemini to select an approved analytical function."""
 
     if not question or not question.strip():
@@ -171,7 +187,7 @@ def answer_business_question(question, data, api_key):
 
         tool_responses = []
 
-        for call in calls:
+              for call in calls:
             name = call.name
 
             if name not in ANALYTICAL_FUNCTIONS:
@@ -180,7 +196,20 @@ def answer_business_question(question, data, api_key):
                     "tool_log": tool_log,
                 }
 
-            result = _json_safe(ANALYTICAL_FUNCTIONS[name](data))
+            if name == "get_customer_satisfaction_analysis":
+                if survey is None or survey.empty:
+                    result = {
+                        "status": "insufficient_data",
+                        "message": "No Survey dataset is available for satisfaction analysis."
+                    }
+                else:
+                    result = _json_safe(
+                        get_customer_satisfaction_analysis(data, survey)
+                    )
+            else:
+                result = _json_safe(ANALYTICAL_FUNCTIONS[name](data))
+
+
 
             tool_log.append({
                 "function": name,
