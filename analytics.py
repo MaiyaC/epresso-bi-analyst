@@ -186,3 +186,100 @@ def get_data_quality_report(data):
         )
     }
 
+
+
+def get_customer_satisfaction_analysis(data, survey):
+    """Compare store-year satisfaction scores with annual store revenue."""
+
+    required_survey = ["Store ID", "Year", "Satisfaction"]
+    required_sales = ["Store ID", "Date", "Revenue", "StoreType"]
+
+    if any(col not in survey.columns for col in required_survey):
+        return {
+            "status": "insufficient_data",
+            "message": "Required survey fields are missing."
+        }
+
+    if any(col not in data.columns for col in required_sales):
+        return {
+            "status": "insufficient_data",
+            "message": "Required sales fields are missing."
+        }
+
+    surveys = survey.copy()
+    sales = data.copy()
+
+    surveys["Year"] = pd.to_numeric(
+        surveys["Year"].astype(str).str.extract(r"(\d{4})")[0],
+        errors="coerce"
+    )
+    surveys["Satisfaction"] = pd.to_numeric(
+        surveys["Satisfaction"], errors="coerce"
+    )
+    sales["Date"] = pd.to_datetime(sales["Date"], errors="coerce")
+    sales["Year"] = sales["Date"].dt.year
+
+    surveys["Store ID"] = surveys["Store ID"].astype(str).str.strip()
+    sales["Store ID"] = sales["Store ID"].astype(str).str.strip()
+
+    surveys = surveys.dropna(
+        subset=["Store ID", "Year", "Satisfaction"]
+    )
+    sales = sales[
+        sales["StoreType"].astype(str).str.strip().eq("Brick & Mortar")
+    ].dropna(subset=["Date", "Revenue"])
+
+    if surveys.empty or sales.empty:
+        return {
+            "status": "insufficient_data",
+            "message": "No matching valid survey and store sales data."
+        }
+
+    if surveys.duplicated(["Store ID", "Year"]).any():
+        return {
+            "status": "invalid_data",
+            "message": "Duplicate store-year survey records were found."
+        }
+
+    annual_revenue = (
+        sales.groupby(["Store ID", "Year"], as_index=False)["Revenue"]
+        .sum()
+    )
+
+    comparison = surveys.merge(
+        annual_revenue,
+        on=["Store ID", "Year"],
+        how="inner",
+        validate="one_to_one"
+    )
+
+    if comparison.empty:
+        return {
+            "status": "insufficient_data",
+            "message": "No matching store-year records were found."
+        }
+
+    results = [
+        {
+            "store_id": str(row["Store ID"]),
+            "year": int(row["Year"]),
+            "satisfaction": float(row["Satisfaction"]),
+            "annual_revenue": float(row["Revenue"])
+        }
+        for _, row in comparison.iterrows()
+    ]
+
+    return {
+        "status": "success",
+        "scope": "physical_store_years_with_valid_survey_data",
+        "average_satisfaction": round(
+            float(comparison["Satisfaction"].mean()), 2
+        ),
+        "store_year_results": results,
+        "note": (
+            "Satisfaction and revenue can be compared, but their "
+            "relationship does not establish causation. "
+            "Survey records without valid satisfaction scores are excluded."
+        )
+    }
+
