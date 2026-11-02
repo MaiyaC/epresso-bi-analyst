@@ -174,7 +174,7 @@ def answer_business_question(question, data, api_key, survey=None):
             ),
         )
 
-        calls = selection.function_calls or []
+       calls = selection.function_calls or []
 
         if not calls:
             return {
@@ -185,9 +185,9 @@ def answer_business_question(question, data, api_key, survey=None):
                 "tool_log": [],
             }
 
-         tool_responses = []
+        tool_responses = []
 
-         for call in calls:
+        for call in calls:
             name = call.name
 
             if name not in ANALYTICAL_FUNCTIONS:
