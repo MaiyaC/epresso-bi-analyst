@@ -174,7 +174,7 @@ def answer_business_question(question, data, api_key, survey=None):
             ),
         )
 
-       calls = selection.function_calls or []
+        calls = selection.function_calls or []
 
         if not calls:
             return {
