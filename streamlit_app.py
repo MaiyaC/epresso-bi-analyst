@@ -409,6 +409,7 @@ if all([sales_file, products_file, categories_file,
                     question=question,
                     data=data,
                     api_key=api_key,
+                    survey=survey,
                 )
             if result.get("error_type") is None:
                 st.session_state.ai_questions_used += 1
