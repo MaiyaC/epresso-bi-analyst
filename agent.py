@@ -101,6 +101,11 @@ RESPONSE FORMATTING RULES:
 - Do not include stray symbols, broken Markdown, or malformed text.
 - Keep numbers and store IDs together in readable sentences.
 - Check the final response for formatting errors before returning it.
+- Write currency amounts with a dollar sign and comma separators, such as $529,260.
+- Do not place Markdown asterisks inside or immediately next to currency amounts.
+- Use plain text for numerical comparisons, such as "Revenue declined from $529,260 to $467,010."
+- Do not use bold or italic formatting within sentences containing numerical comparisons.
+- Before returning the answer, check that every currency amount displays correctly and that no stray asterisks appear.
 """
 
 
