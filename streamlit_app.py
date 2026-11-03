@@ -384,7 +384,7 @@ if all([sales_file, products_file, categories_file,
     if "ai_last_result" not in st.session_state:
         st.session_state.ai_last_result = None
 
-    question_limit = 5
+    question_limit = 15
     remaining = question_limit - st.session_state.ai_questions_used
 
     st.caption(f"Questions remaining this session: {remaining}")
@@ -444,7 +444,7 @@ if all([sales_file, products_file, categories_file,
 
     if remaining <= 0:
         st.info(
-            "You have reached the five-question limit "
+            "You have reached the 15-question limit "
             "for this session."
         )
 
