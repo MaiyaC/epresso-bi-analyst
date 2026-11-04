@@ -142,6 +142,17 @@ The original Sales dataset was restored, and the dashboard resumed normal operat
 
 **Result: Passed after correction**
 
+
+### Missing Required Column Validation Test
+
+To verify that the application handles missing required columns, a separate copy of Sales.xlsx was created with the Revenue column header removed.
+
+When the modified file was uploaded, the application correctly displayed the error message "Sales file is missing required columns: Revenue. Please upload the correct file." and stopped processing.
+
+The original Sales dataset was restored, and the dashboard successfully loaded with the correct total revenue of $42,174,440.
+
+**Result: Passed**
+
 ### Data Import and Preparation
 
 The application uses Pandas to import the five uploaded Excel and CSV datasets. Revenue values are converted to numeric format, and sales dates are converted to datetime format for analysis.
@@ -388,3 +399,4 @@ The AI Analyst uses six approved analytical functions to answer business questio
 | 4. Analytical Judgment | How has revenue changed over time for E-Presso's physical stores, and what should management investigate based on these trends? | `get_store_trend` | Interpret store-level trends accurately, distinguish overall declines from uninterrupted declines, and provide appropriately qualified recommendations. | The initial response incorrectly characterized every store as continuously declining. After instructions were revised, the retest correctly recognized that SH09 increased 2.33% in 2027. | PASS after correction | Revised `SYSTEM_INSTRUCTIONS` in `agent.py` and retested. |
 | 5. Updated Data | What is E-Presso's total revenue across all sales channels? | `get_revenue_by_channel` | After increasing one Website transaction by $1,000, report $42,175,440 rather than the original total. | The AI returned $42,175,440; the dashboard and analytical tool log confirmed the updated result. | PASS | None required. |
 | 6. Customer Satisfaction Analysis | How does customer satisfaction compare with annual revenue across physical stores? | `get_customer_satisfaction_analysis` | Match survey satisfaction scores with annual physical-store revenue using Store ID and Year, report calculated results, and avoid assuming causation. | The function successfully returned 100 matched store-year records and an average satisfaction score of 3.40. The AI compared store-level satisfaction and revenue, and the analytical tool-call log confirmed the reported figures. | PASS | Added the sixth analytical function and updated the AI instructions to support survey-based analysis. |
+
