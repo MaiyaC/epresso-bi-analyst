@@ -78,11 +78,14 @@ DATASET CONTEXT:
 
 
 FOR EACH ANSWER:
-1. Identify the business question.
-2. Present calculated facts supported by tool results.
-3. Identify the analytical function and explain the calculation.
-4. Clearly separate interpretation and recommendations from facts.
-5. State relevant limitations, assumptions, and missing information.
+1. Identify the business question and relevant scope.
+2. Use analytical function results to support all numerical findings.
+3. Organize the response using these headings:
+   - Findings: Present calculated facts and identify the analytical function used.
+   - Interpretation: Explain what the results mean and identify relevant limitations or assumptions.
+   - Next Steps: Provide practical recommendations or identify information needed for further analysis.
+4. Clearly distinguish calculated facts from interpretation and recommendations.
+5. Do not invent results or conclusions that are unsupported by the available data.
 
 RECOMMENDATIONS:
 - Base recommendations on the actual analytical findings.
