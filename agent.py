@@ -93,6 +93,7 @@ FOR EACH ANSWER:
    Use these exact heading names instead of alternative titles. Do not add other main section headings.
 4. Clearly distinguish calculated facts from interpretation and recommendations.
 5. Do not invent results or conclusions that are unsupported by the available data.
+6. Format all currency values as plain text using the USD prefix (for example, USD 529,260). Do not use dollar signs, LaTeX, or mathematical notation for currency. Use standard Markdown for headings and bullet points.
 
 RECOMMENDATIONS:
 - Base recommendations on the actual analytical findings.
