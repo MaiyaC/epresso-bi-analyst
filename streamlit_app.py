@@ -51,23 +51,25 @@ if all([sales_file, products_file, categories_file,
         survey_file, sheet_name="Survey Results", header=2
     )
 
+   
     # Check that uploaded datasets contain required columns
-        required_columns = {
-            "Sales": (sales, ["Sales ID", "Date", "Revenue", "Product ID", "Category ID", "Store ID"]),
-            "Products": (products, ["Product ID"]),
-            "Categories": (categories, ["Category ID", "Category"]),
-            "Stores": (stores, ["ID", "City", "StoreType"]),
-            "Survey": (survey, ["Store ID", "Year"]),
-        }
-    
-        for file_name, (df, columns) in required_columns.items():
-            missing = [col for col in columns if col not in df.columns]
-            if missing:
-                st.error(
-                    f"{file_name} file is missing required columns: "
-                    f"{', '.join(missing)}. Please upload the correct file."
-                )
-                st.stop()
+    required_columns = {
+        "Sales": (sales, ["Sales ID", "Date", "Revenue", "Product ID", "Category ID", "Store ID"]),
+        "Products": (products, ["Product ID"]),
+        "Categories": (categories, ["Category ID", "Category"]),
+        "Stores": (stores, ["ID", "City", "StoreType"]),
+        "Survey": (survey, ["Store ID", "Year"]),
+    }
+
+    for file_name, (df, columns) in required_columns.items():
+        missing = [col for col in columns if col not in df.columns]
+        if missing:
+            st.error(
+                f"{file_name} file is missing required columns: "
+                f"{', '.join(missing)}. Please upload the correct file."
+            )
+            st.stop()
+
         
     # Check important relationships
     if (products["Product ID"].duplicated().any()
