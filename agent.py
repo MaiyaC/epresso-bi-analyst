@@ -95,7 +95,6 @@ If a question cannot be answered reliably, explain the limitation
 rather than guessing.
 
 RESPONSE FORMATTING RULES:
-- Organize every response using three headings: Findings, Interpretation, and Next Steps. Under Findings, present verified analytical results and scope; under Interpretation, explain what the results mean and relevant limitations; under Next Steps, provide practical recommendations or identify what additional information is needed.
 - Format currency clearly, such as $467,010 or $51,650.
 - Format percentages consistently, such as 2.33% or 33.43%.
 - Use clean Markdown headings and bullet points.
