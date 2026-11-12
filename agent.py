@@ -225,19 +225,61 @@ def answer_business_question(question, data, api_key, survey=None):
                 result = _json_safe(ANALYTICAL_FUNCTIONS[name](data))
 
 
+            original_result = result
+
+            scope = {"data": "supplied_data"}
+            rows_used = int(len(data))
+            caveats = ["Results depend on available data."]
+
+            if name == "get_store_trend":
+                physical = data[
+                    data["StoreType"].astype(str).str.strip().eq("Brick & Mortar")
+                ].copy()
+                physical["Date"] = pd.to_datetime(
+                    physical["Date"], errors="coerce"
+                )
+                rows_used = int(
+                    len(physical.dropna(subset=["Date", "Revenue"]))
+                )
+                scope = {"channel": "Brick & Mortar"}
+
+            elif name == "get_monthly_revenue_share":
+                dates = pd.to_datetime(data["Date"], errors="coerce")
+                rows_used = int(
+                    (dates.notna() & data["Revenue"].notna()).sum()
+                )
+                scope = {"time": "available_years"}
+
+            elif name == "get_customer_satisfaction_analysis":
+                scope = {
+                    "channel": "Brick & Mortar",
+                    "unit": "matched_store_year"
+                }
+                rows_used = len(
+                    original_result.get("store_year_results", [])
+                )
+                caveats.append(
+                    "Satisfaction and revenue comparisons do not establish causation."
+                )
+
+            elif name == "get_data_quality_report":
+                scope = {"data": "all_supplied_sales_records"}
+                caveats.append(
+                    "Missing City values may be expected for Website sales."
+                )
+
+            else:
+                caveats.append("Revenue is not profit.")
+
             result = {
                 "tool": name,
-                "value": result,
+                "value": original_result,
                 "definition": TOOL_DESCRIPTIONS[name],
-                "scope": {
-                    "data": "supplied_data"
-                },
-                "rows_used": int(len(data)),
-                "caveats": [
-                    "Revenue is not profit.",
-                    "Results depend on available data."
-                ]
+                "scope": scope,
+                "rows_used": rows_used,
+                "caveats": caveats
             }
+
             
             tool_log.append({
                 "function": name,
