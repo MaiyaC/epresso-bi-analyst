@@ -166,11 +166,18 @@ if all([sales_file, products_file, categories_file,
         default=sorted(data["StoreType"].dropna().unique())
     )
 
+    selected_stores = st.multiselect(
+    "Select Store(s)",
+    options=sorted(data["Store ID"].dropna().unique()),
+    default=sorted(data["Store ID"].dropna().unique())
+    )
+
     # Apply the selected filters
     data = data[
         data["Date"].dt.year.isin(selected_years)
         & data["Category"].isin(selected_categories)
         & data["StoreType"].isin(selected_channels)
+        & data["Store ID"].isin(selected_stores)
     ].copy()
     # Show revenue calculations
     st.header("2. Business Performance")
