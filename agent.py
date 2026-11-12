@@ -225,7 +225,20 @@ def answer_business_question(question, data, api_key, survey=None):
                 result = _json_safe(ANALYTICAL_FUNCTIONS[name](data))
 
 
-
+            result = {
+                "tool": name,
+                "value": result,
+                "definition": TOOL_DESCRIPTIONS[name],
+                "scope": {
+                    "data": "supplied_data"
+                },
+                "rows_used": int(len(data)),
+                "caveats": [
+                    "Revenue is not profit.",
+                    "Results depend on available data."
+                ]
+            }
+            
             tool_log.append({
                 "function": name,
                 "arguments": {},
