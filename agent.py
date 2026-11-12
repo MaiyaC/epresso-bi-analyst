@@ -159,17 +159,37 @@ def answer_business_question(question, data, api_key, survey=None):
     try:
         client = genai.Client(api_key=api_key)
 
+        filter_properties = {
+            "year": {
+                "type": "INTEGER",
+                "description": "Optional calendar year to analyze."
+            },
+            "channel": {
+                "type": "STRING",
+                "description": "Optional sales channel: Website or Brick & Mortar."
+            },
+            "store": {
+                "type": "STRING",
+                "description": "Optional Store ID, such as SH09."
+            }
+        }
+
         tool_list = [
             types.FunctionDeclaration(
                 name=name,
                 description=description,
                 parameters={
                     "type": "OBJECT",
-                    "properties": {},
+                    "properties": (
+                        filter_properties
+                        if name != "get_data_quality_report"
+                        else {}
+                    )
                 },
             )
             for name, description in TOOL_DESCRIPTIONS.items()
         ]
+        
 
         selection = client.models.generate_content(
             model="gemini-3.5-flash-lite",
@@ -204,6 +224,7 @@ def answer_business_question(question, data, api_key, survey=None):
 
         for call in calls:
             name = call.name
+            args = dict(call.args or {})
 
             if name not in ANALYTICAL_FUNCTIONS:
                 return {
@@ -211,65 +232,89 @@ def answer_business_question(question, data, api_key, survey=None):
                     "tool_log": tool_log,
                 }
 
-            if name == "get_customer_satisfaction_analysis":
+            allowed_args = (
+                set() if name == "get_data_quality_report"
+                else {"year", "channel", "store"}
+            )
+            error = None
+            if any(key not in allowed_args for key in args):
+                error = "Unsupported filter parameter."
+            elif "year" in args and type(args["year"]) is not int:
+                error = "Year must be an integer."
+            elif "channel" in args and not isinstance(args["channel"], str):
+                error = "Channel must be a string."
+            elif "store" in args and not isinstance(args["store"], str):
+                error = "Store must be a string."
+
+            if error:
+                original_result = {"status": "invalid_parameter", "message": error}
+            elif name == "get_customer_satisfaction_analysis":
                 if survey is None or survey.empty:
-                    result = {
+                    original_result = {
                         "status": "insufficient_data",
                         "message": "No Survey dataset is available for satisfaction analysis."
                     }
                 else:
-                    result = _json_safe(
-                        get_customer_satisfaction_analysis(data, survey)
+                    original_result = _json_safe(
+                        get_customer_satisfaction_analysis(data, survey, **args)
                     )
+            elif name == "get_data_quality_report":
+                original_result = _json_safe(get_data_quality_report(data))
             else:
-                result = _json_safe(ANALYTICAL_FUNCTIONS[name](data))
+                original_result = _json_safe(
+                    ANALYTICAL_FUNCTIONS[name](data, **args)
+                )
 
+            # Count the records actually considered for this tool's analysis.
+            # Store trends retain the previous calendar year for YoY comparisons.
+            filtered_data = data.copy()
+            if "year" in args and type(args["year"]) is int:
+                dates = pd.to_datetime(filtered_data["Date"], errors="coerce")
+                years = (
+                    [args["year"] - 1, args["year"]]
+                    if name == "get_store_trend" else [args["year"]]
+                )
+                filtered_data = filtered_data[dates.dt.year.isin(years)]
+            if "channel" in args and isinstance(args["channel"], str):
+                filtered_data = filtered_data[
+                    filtered_data["StoreType"] == args["channel"]
+                ]
+            if "store" in args and isinstance(args["store"], str):
+                filtered_data = filtered_data[
+                    filtered_data["Store ID"].astype(str) == args["store"]
+                ]
 
-            original_result = result
-
-            scope = {"data": "supplied_data"}
-            rows_used = int(len(data))
+            scope = {"data": "supplied_data", **args}
+            rows_used = int(len(filtered_data))
             caveats = ["Results depend on available data."]
 
             if name == "get_store_trend":
-                physical = data[
-                    data["StoreType"].astype(str).str.strip().eq("Brick & Mortar")
+                physical = filtered_data[
+                    filtered_data["StoreType"].astype(str).str.strip().eq("Brick & Mortar")
                 ].copy()
-                physical["Date"] = pd.to_datetime(
-                    physical["Date"], errors="coerce"
-                )
-                rows_used = int(
-                    len(physical.dropna(subset=["Date", "Revenue"]))
-                )
-                scope = {"channel": "Brick & Mortar"}
-
+                physical["Date"] = pd.to_datetime(physical["Date"], errors="coerce")
+                rows_used = int(len(physical.dropna(subset=["Date", "Revenue"])))
+                scope["channel"] = args.get("channel", "Brick & Mortar")
+                if "year" in args:
+                    caveats.append("Previous-year records are included to calculate year-over-year growth.")
+                caveats.append("Revenue is not profit.")
             elif name == "get_monthly_revenue_share":
-                dates = pd.to_datetime(data["Date"], errors="coerce")
-                rows_used = int(
-                    (dates.notna() & data["Revenue"].notna()).sum()
-                )
-                scope = {"time": "available_years"}
-
+                dates = pd.to_datetime(filtered_data["Date"], errors="coerce")
+                rows_used = int((dates.notna() & filtered_data["Revenue"].notna()).sum())
+                caveats.append("Revenue is not profit.")
             elif name == "get_customer_satisfaction_analysis":
-                scope = {
-                    "channel": "Brick & Mortar",
-                    "unit": "matched_store_year"
-                }
-                rows_used = len(
-                    original_result.get("store_year_results", [])
-                )
-                caveats.append(
-                    "Satisfaction and revenue comparisons do not establish causation."
-                )
-
+                scope["channel"] = "Brick & Mortar"
+                scope["unit"] = "matched_store_year"
+                rows_used = len(original_result.get("store_year_results", []))
+                caveats.append("Satisfaction and revenue comparisons do not establish causation.")
             elif name == "get_data_quality_report":
                 scope = {"data": "all_supplied_sales_records"}
-                caveats.append(
-                    "Missing City values may be expected for Website sales."
-                )
-
+                caveats.append("Missing City values may be expected for Website sales.")
             else:
                 caveats.append("Revenue is not profit.")
+
+            if error:
+                rows_used = 0
 
             result = {
                 "tool": name,
@@ -277,16 +322,13 @@ def answer_business_question(question, data, api_key, survey=None):
                 "definition": TOOL_DESCRIPTIONS[name],
                 "scope": scope,
                 "rows_used": rows_used,
-                "caveats": caveats
+                "caveats": caveats,
             }
-
-            
             tool_log.append({
                 "function": name,
-                "arguments": {},
+                "arguments": args,
                 "raw_result": result,
             })
-
             tool_responses.append(
                 types.Part.from_function_response(
                     name=name,
@@ -331,6 +373,7 @@ def answer_business_question(question, data, api_key, survey=None):
             "error_type": type(error).__name__,
             "error_details": str(error),
         }
+
 
 
 
