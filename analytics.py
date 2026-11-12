@@ -2,9 +2,28 @@
 import pandas as pd
 
 
-def get_revenue_by_channel(data):
+def get_revenue_by_channel(data, year=None, channel=None, store=None):
     """Calculate total revenue by sales channel."""
 
+    data = data.copy()
+
+    if year is not None:
+        dates = pd.to_datetime(data["Date"], errors="coerce")
+        available_years = dates.dt.year.dropna().unique()
+        if year not in available_years:
+            return {"status": "invalid_parameter", "message": "Year is not available in the data."}
+        data = data[dates.dt.year == year]
+
+    if channel is not None:
+        if channel not in data["StoreType"].dropna().unique():
+            return {"status": "invalid_parameter", "message": "Channel is not available in the data."}
+        data = data[data["StoreType"] == channel]
+
+    if store is not None:
+        if store not in data["Store ID"].dropna().unique():
+            return {"status": "invalid_parameter", "message": "Store is not available in the data."}
+        data = data[data["Store ID"] == store]
+    
     revenue_by_channel = (
         data.groupby("StoreType", dropna=False)["Revenue"]
         .sum()
@@ -33,9 +52,28 @@ def get_revenue_by_channel(data):
     return results
 
 
-def get_category_performance(data):
+def get_category_performance(data, year=None, channel=None, store=None):
     """Analyze revenue performance by product category."""
 
+    data = data.copy()
+
+    if year is not None:
+        dates = pd.to_datetime(data["Date"], errors="coerce")
+        available_years = dates.dt.year.dropna().unique()
+        if year not in available_years:
+            return {"status": "invalid_parameter", "message": "Year is not available in the data."}
+        data = data[dates.dt.year == year]
+
+    if channel is not None:
+        if channel not in data["StoreType"].dropna().unique():
+            return {"status": "invalid_parameter", "message": "Channel is not available in the data."}
+        data = data[data["StoreType"] == channel]
+
+    if store is not None:
+        if store not in data["Store ID"].dropna().unique():
+            return {"status": "invalid_parameter", "message": "Store is not available in the data."}
+        data = data[data["Store ID"] == store]
+    
     category_revenue = (
         data.groupby("Category", dropna=False)["Revenue"]
         .sum()
@@ -70,9 +108,26 @@ def get_category_performance(data):
     }
 
 
-def get_monthly_revenue_share(data):
+def get_monthly_revenue_share(data, year=None, channel=None, store=None):
     """Calculate each month's share of annual revenue."""
     df = data.copy()
+
+    if year is not None:
+        dates = pd.to_datetime(df["Date"], errors="coerce")
+        if year not in dates.dt.year.dropna().unique():
+            return {"status": "invalid_parameter", "message": "Year is not available in the data."}
+        df = df[dates.dt.year == year].copy()
+
+    if channel is not None:
+        if channel not in df["StoreType"].dropna().unique():
+            return {"status": "invalid_parameter", "message": "Channel is not available in the data."}
+        df = df[df["StoreType"] == channel].copy()
+
+    if store is not None:
+        if store not in df["Store ID"].dropna().unique():
+            return {"status": "invalid_parameter", "message": "Store is not available in the data."}
+        df = df[df["Store ID"] == store].copy()
+    
     df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
 
     valid = df.dropna(subset=["Date", "Revenue"]).copy()
@@ -108,9 +163,27 @@ def get_monthly_revenue_share(data):
     }
 
 
-def get_store_trend(data):
+def get_store_trend(data, year=None, channel=None, store=None):
     """Compare annual revenue trends for physical stores."""
     df = data.copy()
+
+    
+    if year is not None:
+        dates = pd.to_datetime(df["Date"], errors="coerce")
+        if year not in dates.dt.year.dropna().unique():
+            return {"status": "invalid_parameter", "message": "Year is not available in the data."}
+        df = df[dates.dt.year.isin([year - 1, year])].copy()
+
+    if channel is not None:
+        if channel not in df["StoreType"].dropna().unique():
+            return {"status": "invalid_parameter", "message": "Channel is not available in the data."}
+        df = df[df["StoreType"] == channel].copy()
+
+    if store is not None:
+        if store not in df["Store ID"].dropna().unique():
+            return {"status": "invalid_parameter", "message": "Store is not available in the data."}
+        df = df[df["Store ID"] == store].copy()
+    
     df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
 
     required = ["Store ID", "StoreType", "Date", "Revenue"]
@@ -152,6 +225,9 @@ def get_store_trend(data):
             })
             previous_revenue = revenue
 
+    if year is not None:
+        results = [row for row in results if row["year"] == year]
+    
     return {
         "status": "success",
         "scope": "physical_stores_in_supplied_data",
@@ -188,7 +264,7 @@ def get_data_quality_report(data):
 
 
 
-def get_customer_satisfaction_analysis(data, survey):
+def get_customer_satisfaction_analysis(data, survey, year=None, channel=None, store=None):
     """Compare store-year satisfaction scores with annual store revenue."""
 
     required_survey = ["Store ID", "Year", "Satisfaction"]
@@ -208,6 +284,30 @@ def get_customer_satisfaction_analysis(data, survey):
 
     surveys = survey.copy()
     sales = data.copy()
+
+    if year is not None:
+        dates = pd.to_datetime(sales["Date"], errors="coerce")
+        if year not in dates.dt.year.dropna().unique():
+            return {"status": "invalid_parameter", "message": "Year is not available in the data."}
+        sales = sales[dates.dt.year == year].copy()
+        survey_years = pd.to_numeric(
+            surveys["Year"].astype(str).str.extract(r"(\d{4})")[0],
+            errors="coerce"
+        )
+        surveys = surveys[survey_years == year].copy()
+
+    if channel is not None:
+        if channel != "Brick & Mortar":
+            return {
+                "status": "invalid_parameter",
+                "message": "Customer satisfaction analysis supports physical stores only."
+            }
+
+    if store is not None:
+        if store not in sales["Store ID"].dropna().astype(str).unique():
+            return {"status": "invalid_parameter", "message": "Store is not available in the data."}
+        sales = sales[sales["Store ID"].astype(str) == str(store)].copy()
+        surveys = surveys[surveys["Store ID"].astype(str) == str(store)].copy()
 
     surveys["Year"] = pd.to_numeric(
         surveys["Year"].astype(str).str.extract(r"(\d{4})")[0],
