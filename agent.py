@@ -248,7 +248,7 @@ def answer_business_question(question, data, api_key, survey=None):
                 ),
                 selection.candidates[0].content,
                 types.Content(
-                    role="tool",
+                    role="user",
                     parts=tool_responses,
                 ),
             ],
