@@ -484,7 +484,7 @@ with st.expander("Gemini Connection Test"):
             )
 
             response = client.models.generate_content(
-                model="gemini-3-flash-preview",
+                model="gemini-3.8-flash",
                 contents="What is 2 + 2?",
             )
 
